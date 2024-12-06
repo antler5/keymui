@@ -8,8 +8,8 @@ edition = "2021"
 [dependencies]
 iced = {version = "0.12.1", features = ["lazy", "canvas"]}
 iced_aw = {version = "0.8.0", default-features = false, features = ["card", "modal"]}
-km = {package = "keymeow", git = "https://github.com/semilin/keymeow"}
-kc = {package = "keycat", git = "https://github.com/semilin/keycat"}
+km = {package = "keymeow", git = "https://github.com/antler5/keymeow", branch = "keymui"}
+kc = {package = "keycat", git = "https://github.com/antler5/keycat"}
 rfd = {version = "0.11.4"}
 directories = "5.0.1"
 serde_json = "1.0.104"
