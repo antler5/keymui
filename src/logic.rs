@@ -77,6 +77,7 @@ impl Keymui {
             .collect::<Vec<Vec<char>>>();
         char_list.extend(vec![
             vec![' '],
+            vec!['†'], vec!['‡'],
             vec![',', '<'],
             vec!['.', '>'],
             vec!['/', '?'],
