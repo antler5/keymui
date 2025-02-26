@@ -22,6 +22,7 @@ use layout_display::{ColorStyle, LayoutDisplay};
 use rfd::FileDialog;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
+use std::fs;
 use std::iter;
 use std::path::PathBuf;
 
@@ -197,6 +198,7 @@ impl Application for Keymui {
             UserCommand::SetMetricsDirectory,
             UserCommand::Reload,
             UserCommand::ImportCorpus,
+            UserCommand::ImportCorpora,
             UserCommand::ViewNotification,
             UserCommand::Swap,
             UserCommand::Precision,
@@ -616,6 +618,29 @@ impl Application for Keymui {
                 let _ = self.set_corpus_list();
                 return text_input::focus::<Message>(text_input::Id::new("cmd"));
             }
+            Message::ImportNewCorpora => {
+                let folder = FileDialog::new()
+                    .set_directory(self.base_dirs.home_dir())
+                    .pick_folder();
+                if let Ok(files) = fs::read_dir(folder.unwrap()) {
+                    for file_ in files {
+                        match self.import_corpus(file_.unwrap().path()) {
+                            Ok(_) => {
+                                self.notification =
+                                    ("successfully imported corpus".to_string(), None)
+                            }
+                            Err(e) => {
+                                self.notification = (
+                                    "error importing corpus".to_string(),
+                                    Some(e.to_string()),
+                                )
+                            }
+                        }
+                    }
+                }
+                let _ = self.set_corpus_list();
+                return text_input::focus::<Message>(text_input::Id::new("cmd"));
+            }
             Message::CommandInputChanged(s) => {
                 let ns = self.input_completions.len();
                 if ns > 0 && s.ends_with(' ') {
@@ -796,6 +821,7 @@ pub enum Message {
     SetMetricsDirectory,
     Reload,
     ImportNewCorpus,
+    ImportNewCorpora,
     CommandInputChanged(String),
     CommandSubmitted,
     ViewNotification,

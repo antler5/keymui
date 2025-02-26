@@ -16,6 +16,7 @@ pub enum UserCommand {
     SetMetricsDirectory,
     Reload,
     ImportCorpus,
+    ImportCorpora,
     ViewNotification,
     Swap,
     Precision,
@@ -29,6 +30,7 @@ impl UserCommand {
             UserCommand::SetMetricsDirectory => vec![],
             UserCommand::Reload => vec![],
             UserCommand::ImportCorpus => vec![],
+            UserCommand::ImportCorpora => vec![],
             UserCommand::ViewNotification => vec![],
             UserCommand::Swap => vec![UserArg::Key, UserArg::Key],
             UserCommand::Precision => vec![UserArg::NaturalNum],
@@ -47,6 +49,7 @@ impl std::fmt::Display for UserCommand {
             UserCommand::SetMetricsDirectory => write!(f, "set-metrics-directory"),
             UserCommand::Reload => write!(f, "reload"),
             UserCommand::ImportCorpus => write!(f, "import-corpus"),
+            UserCommand::ImportCorpora => write!(f, "import-corpora"),
             UserCommand::ViewNotification => write!(f, "view-notification"),
             UserCommand::Swap => write!(f, "swap"),
             UserCommand::Precision => write!(f, "precision"),
@@ -118,6 +121,7 @@ impl Keymui {
             UserCommand::SetMetricsDirectory => Some(Message::SetMetricsDirectory),
             UserCommand::Reload => Some(Message::Reload),
             UserCommand::ImportCorpus => Some(Message::ImportNewCorpus),
+            UserCommand::ImportCorpora => Some(Message::ImportNewCorpora),
             UserCommand::ViewNotification => Some(Message::ViewNotification),
             UserCommand::Swap => {
                 let keys: Vec<char> = args.iter().filter_map(|x| x.chars().next()).collect();
