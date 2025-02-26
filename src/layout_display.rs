@@ -79,11 +79,29 @@ impl LayoutDisplay {
         let corpus = &ctx.analyzer.corpus;
         let freqs: Vec<f32> = match style {
             ColorStyle::Frequency => {
-                let max_freq = l.0.iter().map(|c| corpus.chars[*c]).max().unwrap();
-                l.0
+                let mut max_freq = l.0.iter().map(|c| corpus.chars[*c]).max().unwrap() as f32;
+                let mut heatmap_data: Vec<f32> = l.0.iter().map(|c| corpus.chars[*c] as f32).collect();
+
+                let kb_size = kb.keys.map.iter().flatten().count();
+                // kb.process_combo_indexes(); // XXX: what do???
+                for (idx, combo) in kb.combo_indexes.iter().enumerate() {
+                    let key = l.0[kb_size + idx];
+                    let freq = corpus.chars[key] as f32;
+                    if freq > max_freq {
+                        max_freq = freq;
+                    }
+                    for i in combo {
+                        heatmap_data[*i] += freq;
+                    }
+                }
+
+                heatmap_data = heatmap_data
                     .iter()
-                    .map(|c| 0.3 + (1.0 + corpus.chars[*c] as f32 / (max_freq as f32 - 0.3)).log2())
-                    .collect()
+                    .map(|c| 0.3 + (1.0 + c / (max_freq - 0.3)).log2())
+                    .collect();
+
+                println!("heatmap_data: {:?}", heatmap_data);
+                heatmap_data
             }
             ColorStyle::Metric => {
                 let counts: Vec<f32> = (0..ctx.layout.0.len())
